@@ -4,8 +4,15 @@ import AppRoutes from "./routes";
 import PageLoading from "./components/PageLoading";
 import Theme from "./providers/theme";
 import '@fontsource/inter';
+import { useMetaData } from "./features";
 
 function App() {
+  const { fetchCurrencyData } = useMetaData();
+  
+  React.useEffect(() => {
+    fetchCurrencyData();
+  }, []);
+
   return (
     <Suspense fallback={ <PageLoading/> }>
       <Theme>

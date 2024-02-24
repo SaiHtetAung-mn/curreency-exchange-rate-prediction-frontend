@@ -76,7 +76,7 @@ const Theme = (props) => {
                     paragraph: {
                         fontSize: 10
                     }
-                }
+                },
             }), [themeMode]);
     
     return (

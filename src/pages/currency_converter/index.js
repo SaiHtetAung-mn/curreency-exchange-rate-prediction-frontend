@@ -12,7 +12,6 @@ const amountField = { FIRST: 'first', SECOND: 'second' };
 
 export default function CurrencyConverter() {
     const { isLoading, historyData, convert, fetchHistoryData } = useCurrencyConverter();
-    const [historyRange, setHistoryRange] = useState(5);
     const [firstCurrency, setFirstCurrency] = React.useState("USD");
     const [secondCurrency, setSecondCurrency] = React.useState("MMK");
     const [firstAmount, setFirstAmount] = React.useState(1);
@@ -21,10 +20,12 @@ export default function CurrencyConverter() {
 
     function onFirstCurrencyChange(code) {
         setFirstCurrency(code);
+        setConverter(prevState => ({ ...prevState, from: code }));
     }
 
     function onSecondCurrencyChange(code) {
         setSecondCurrency(code);
+        setConverter(prevState => ({ ...prevState, to: code }));
     }
 
     function onFirstCurrencyAmountChange(e) {
@@ -53,7 +54,8 @@ export default function CurrencyConverter() {
     }
 
     React.useEffect(() => {
-        //fetchHistoryData({ from: converter.from, to: converter.to, startDate: "2024-01-10" })
+        const startDate = dayjs().subtract(7, 'day').format('YYYY-MM-DD');
+        fetchHistoryData({ from: converter.from, to: converter.to, startDate: "2024-01-10" })
         if(converter.resultField == amountField.FIRST) {
             setFirstAmount(converter.toVal);
         }
@@ -61,11 +63,6 @@ export default function CurrencyConverter() {
             setSecondAmount(converter.toVal);
         }
     }, [converter.toVal]);
-
-    React.useEffect(() => {
-        const startDate = dayjs().subtract(historyRange, 'day').format('YYYY-MM-DD');
-        //fetchHistoryData({ from: converter.from, to: converter.to, startDate })
-    }, [historyRange]); 
 
     return (
         <>
@@ -80,13 +77,13 @@ export default function CurrencyConverter() {
                         </Box>
                         
                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 5, mb: 6 }}>
-                            <Box >
-                                <CurrencySelector fullWidth hasLabel defaultCurrency="USD" onChange={onFirstCurrencyChange}/>
+                            <Box>
+                                <CurrencySelector fullWidth hasLabel hasFlag defaultCurrency="USD" onChange={onFirstCurrencyChange}/>
                                 <TextField variant="filled" fullWidth hiddenLabel sx={{ mt: 6 }} inputProps={{ style: { fontSize: "140%" } }} onChange={onFirstCurrencyAmountChange} value={firstAmount} disabled={isLoading}/>
                             </Box>
                             <CompareArrowsIcon color="primary" sx={{ width: 30 }}/>
                             <Box>
-                                <CurrencySelector fullWidth hasLabel defaultCurrency="MMK" onChange={onSecondCurrencyChange}/>
+                                <CurrencySelector fullWidth hasLabel hasFlag defaultCurrency="MMK" onChange={onSecondCurrencyChange}/>
                                 <TextField variant="filled" fullWidth hiddenLabel sx={{ mt: 6}} inputProps={{ style: { fontSize: "140%" } }} onChange={onSecondCurrencyAmountChange} value={secondAmount} disabled={isLoading}/>
                             </Box>
                         </Box>
@@ -96,12 +93,7 @@ export default function CurrencyConverter() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}>
                     <Box sx={{ borderRadius: 3, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px", p: "30px 10px", width: '100%' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                            <Button sx={{ padding: '10px 3px', color: 'primary' }} variant={historyRange == 5 ? "contained" : "text"} disableTouchRipple={historyRange == 5} onClick={() => setHistoryRange(5)}>5D</Button>
-                            <Button sx={{ padding: '10px 3px', color: 'primary' }} variant={historyRange == 10 ? "contained" : "text"} disableTouchRipple={historyRange == 10} onClick={() => setHistoryRange(10)}>10D</Button>
-                            <Button sx={{ padding: '10px 3px', color: 'primary' }} variant={historyRange == 30 ? "contained" : "text"} disableTouchRipple={historyRange == 30} onClick={() => setHistoryRange(30)}>30D</Button>
-                        </Box>
-
+                        <Typography variant="body1" color="gray" pl={2}>{converter.from}/{converter.to} for past 7 days</Typography>
                         {
                             historyData.isLoading ? 
                                 <Box height={250} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress size={25} color="secondary"/></Box> : 
@@ -111,8 +103,6 @@ export default function CurrencyConverter() {
                                     height={250}
                                 />
                         }
-
-                        <Typography variant="body1" color="gray" pl={2}>{converter.from}/{converter.to} for past {historyRange} days</Typography>
                     </Box>
                 </Grid>
             </Grid>

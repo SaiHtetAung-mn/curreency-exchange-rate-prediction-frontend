@@ -5,14 +5,16 @@ import {
   themeReducer, 
   articleReducer, 
   metadataReducer, 
-  currencyConverterReducer 
+  currencyConverterReducer,
+  currencyPredictionReducer
 } from './features';
 
 const reducer = combineReducers({
     theme: themeReducer,
     article: articleReducer,
     metaData: metadataReducer,
-    currencyConverter: currencyConverterReducer
+    currencyConverter: currencyConverterReducer,
+    prediction: currencyPredictionReducer
 });
 
 export const store = configureStore({

@@ -16,15 +16,15 @@ const useCurrencyConverterActions = () => {
     async function convert(from, to, value) {
         try {
             dispatch(fetchingData());
-            // const url = `v3/latest?base_currency=${from}&currencies=${to}`;
-            // const res = await apiRequest.CurrencyAPI.get(url);
-            // const { meta: { last_updated_at }, data } = res.data;
-            // console.log(last_updated_at)
-            // const result = (value*data[to]["value"] ?? 0).toFixed(2);
+            const url = `v3/latest?base_currency=${from}&currencies=${to}`;
+            const res = await apiRequest.CurrencyAPI.get(url);
+            const { meta: { last_updated_at }, data } = res.data;
+            console.log(last_updated_at)
+            const result = (value*data[to]["value"] ?? 0).toFixed(2);
 
             dispatch(fetchDataSuccess());
-            return { lastUpdatedAt: '2024-02-03T23:59:59Z', resultVal: 3500 }
-            //return { lastUpdatedAt: last_updated_at, resultVal: result }
+            // return { lastUpdatedAt: '2024-02-03T23:59:59Z', resultVal: 3500 }
+            return { lastUpdatedAt: last_updated_at, resultVal: result }
         }
         catch(err) {
             dispatch(fetchDataFail());

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BACKEND_URL = 'http://localhost:8080';
+const BACKEND_URL = 'http://localhost:8080/api';
 const NEWS_API_URL = 'https://newsapi.org';
 const CURRENCY_API_URL = 'https://api.currencyapi.com';
 const XE_API_URL = 'https://xecdapi.xe.com';
