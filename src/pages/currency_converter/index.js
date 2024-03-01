@@ -20,19 +20,19 @@ export default function CurrencyConverter() {
 
     function onFirstCurrencyChange(code) {
         setFirstCurrency(code);
-        setConverter(prevState => ({ ...prevState, from: code }));
+        setConverter(prevState => ({ ...prevState, from: code, toVal: '' }));
     }
 
     function onSecondCurrencyChange(code) {
         setSecondCurrency(code);
-        setConverter(prevState => ({ ...prevState, to: code }));
+        setConverter(prevState => ({ ...prevState, to: code, toVal: '' }));
     }
 
     function onFirstCurrencyAmountChange(e) {
         const val = e.target.value;
         setFirstAmount(val);
         setConverter(prevState => (
-            { ...prevState, from: firstCurrency, to: secondCurrency, fromVal: val, resultField: amountField.SECOND }
+            { ...prevState, from: firstCurrency, to: secondCurrency, fromVal: val, resultField: amountField.SECOND, toVal: '' }
         ));
     }
 
@@ -40,7 +40,7 @@ export default function CurrencyConverter() {
         const val = e.target.value;
         setSecondAmount(val);
         setConverter(prevState => (
-            { ...prevState, from: secondCurrency, to: firstCurrency, fromVal: val, resultField: amountField.FIRST }
+            { ...prevState, from: secondCurrency, to: firstCurrency, fromVal: val, resultField: amountField.FIRST, toVal: '' }
         ));
     }
 
@@ -55,7 +55,7 @@ export default function CurrencyConverter() {
 
     React.useEffect(() => {
         const startDate = dayjs().subtract(7, 'day').format('YYYY-MM-DD');
-        fetchHistoryData({ from: converter.from, to: converter.to, startDate: "2024-01-10" })
+        fetchHistoryData({ from: converter.from, to: converter.to, startDate })
         if(converter.resultField == amountField.FIRST) {
             setFirstAmount(converter.toVal);
         }
@@ -70,7 +70,7 @@ export default function CurrencyConverter() {
 
             <Grid container spacing={10} sx={{ mt: 1 }}>
                 <Grid item sm={12} md={12} lg={8}>
-                    <Box sx={{ borderRadius: 3, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px", p: 10 }}>
+                    <Box sx={{ borderRadius: 3, boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px", p: 7 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 5 }}>
                             <div style={{ width: 6, height: 6, borderRadius: '100%', backgroundColor: '#00ff00' }}></div>
                             <Typography variant="caption" margin={0} color="gray">Last updated at: { converter.lastUpdatedAt && dayjs(converter.lastUpdatedAt).format("MMM DD, YYYY hh:mm A") }</Typography>
@@ -89,6 +89,10 @@ export default function CurrencyConverter() {
                         </Box>
 
                         <LoadingButton isLoading={isLoading} fullWidth onClick={convertCurrency}>Convert</LoadingButton>
+
+                        {
+                            converter.toVal && <Typography variant="body1" sx={{ mt: 5 }}>{ `1 ${converter.from} = ${(converter.toVal/converter.fromVal)} ${converter.to}` }</Typography>
+                        }
                     </Box>
                 </Grid>
                 <Grid item xs={12} sm={12} md={12} lg={4}>

@@ -18,7 +18,7 @@ export default function Home() {
     const [period, setPeriod] = React.useState(5);
     const { historyData, fetchHistoryData } = useCurrencyConverter();
     const { predict, isLoading } = useCurrencyPrediction();
-    const [prediction, setPreidction] = React.useState({ currency: null, date: null, result: '' });
+    const [prediction, setPreidction] = React.useState({ currency: null, date: null, result: null });
 
     React.useEffect(() => {
         const startDate = dayjs().subtract(period, 'day').format('YYYY-MM-DD');
@@ -36,7 +36,7 @@ export default function Home() {
     const onPredict = () => {
         if(prediction.currency && prediction.date) {
             predict(prediction.currency, prediction.date).then(result => {
-                setPreidction(prevState => ({ ...prevState, result }));
+                setPreidction(prevState => ({ ...prevState, result: (1/result).toFixed(2) }));
             })
         }
     }
@@ -93,7 +93,7 @@ export default function Home() {
                                         isLoading && <LoadingWave/>
                                     }
                                     {
-                                        Boolean(!isLoading & prediction.result) && <Typography variant="h1">{prediction.result} Ks</Typography>
+                                        Boolean(!isLoading & prediction.result !== null) && <Typography variant="h1">{prediction.result} Ks</Typography>
                                     }
                                 </Box>
                             </Box>

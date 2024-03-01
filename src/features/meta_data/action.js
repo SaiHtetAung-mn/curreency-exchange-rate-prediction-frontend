@@ -21,13 +21,15 @@ const useMetaDataActions = () => {
     }
 
     function fetchLatestCurrencyRate() {
-        dispatch(fetchingCurrencyRate());
-        const url = '/currency-rates/latest';
-        apiRequest.Backend.get(url)
-        .then(res => {
-            dispatch(fetchCurrencyRateSuccess(res.data));
+        return new Promise((resolve) => {
+            dispatch(fetchingCurrencyRate());
+            const url = '/currency-rates/latest';
+            apiRequest.Backend.get(url)
+            .then(res => {
+                setTimeout(() => dispatch(fetchCurrencyRateSuccess(res.data)), 3000);
+            })
+            .catch(() => dispatch(fetchCurrencyRateFail()));
         })
-        .catch(() => dispatch(fetchCurrencyRateFail()));
     }
 
     return {
